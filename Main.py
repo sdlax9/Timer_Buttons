@@ -39,11 +39,9 @@ redLED.off()
 greenLED.on()
 greenButton.wait_for_press()
 greenLED.off()
-
 blueLED.on()
 blueButton.wait_for_press()
 blueLED.off()
-
 print('complete')
 
 exit
