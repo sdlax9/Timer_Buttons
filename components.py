@@ -3,12 +3,13 @@ from gpizero import Button
 from gpiozero import LEDBoard
 from time import sleep
 
-class PlayerButton():
-    '''Player button and led'''
+from typing import List
 
-    def __init__(self, color, button_pin, led_pin):
+class PlayerButton():
+    '''Class for player button and LED'''
+
+    def __init__(self, color: str, button_pin: int, led_pin: int):
         self.color = color
-        self.pin = pin
         self.button = Button(button_pin)
         self.led = LED(led_pin)
 
@@ -21,5 +22,39 @@ class PlayerButton():
         '''Turns button LED off'''
         self.led.off()
 
+    def led_flash(self, flashes: int, delay=0.05):
+        ''''''
+        pass # TODO
+
+
+class AcceptButton():
+    '''Class for the accept button'''
+
+    def __init__(self, button_pin: int):
+        self.button = Button(button_pin)
+
+
+class Session():
+    '''Class for game session'''
+
+    def __init__(self):
+        self.player_buttons = []
+        self.session_state = None
+
+    def setup(self):
+        '''Initializes session setup'''
+        self.session_state = 'setup'
+        
+
+    def add_player_button(self, button: PlayerButton):
+        '''Append PlayerButton to buttons'''
+        self.buttons.append(button)
+
+    def start():
+        self.session_state = 'game'
+        pass # TODO
     
         
+    def end():
+        pass # TODO
+
