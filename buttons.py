@@ -24,7 +24,11 @@ class PlayerButton():
 
     def led_flash(self, flashes: int, delay=0.05):
         ''''''
-        pass # TODO
+        for i in range(flashes):
+            self.led_on()
+            sleep(delay)
+            self.led_off()
+            sleep(delay)
 
     def button_pressed(self):
         print(f'{self.button.pin.number}')
