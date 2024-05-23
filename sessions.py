@@ -47,8 +47,27 @@ class SetupState(SessionState):
 
     def start(self):
         '''Start session state'''
-
         self.startup_pattern()
+
+class GameState(SessionState):
+    '''Startup session state'''
+
+    def startup_pattern():
+        '''Starting LED pattern'''
+        pass # TODO
+
+    def on_button_pressed(button):
+        '''When a button is pressed'''
+        pass # TODO
+
+    def on_button_hold(button):
+        '''When a button is held'''
+        pass # TODO
+
+    def start(self):
+        '''Start session state'''
+        self.startup_pattern()
+
 
 
 
