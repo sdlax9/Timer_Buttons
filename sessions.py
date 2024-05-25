@@ -1,41 +1,49 @@
-from gpiozero import Button, LED, LEDBoard
 from time import sleep
 
 from typing import List
 
-from config import LED_BOARD, BUTTON_MAP, ACCEPT_BUTTON
+from config import BUTTON_LIST, ACCEPT_BUTTON
 from buttons import PlayerButton, AcceptButton
 
 class SessionState():
     '''Base class for session state'''
 
+    def __init__(self, accept_button: AcceptButton = ACCEPT_BUTTON):
+        self.accept_button = accept_button
+
     def startup_pattern():
+        '''LED pattern on startup'''
         pass
 
-    def on_button_press(button):
+    def set_accept_button_press(self):
+        '''Set accept button press function'''
         pass
 
-    def on_button_hold(button):
+    def set_accept_button_hold(self):
+        '''Set accept button hold function'''
+        pass
+
+    def set_player_button_press(self):
+        '''Set player buttons press function'''
+        pass
+
+    def set_player_button_hold(self):
+        '''Set player buttons hold function'''
         pass
 
     def start(self):
+        '''Runs session state pattern and sets button functions'''
         self.startup_pattern()
 
 class SetupState(SessionState):
     '''Startup session state'''
 
+    def __init__(self, buttons: List[PlayerButton] = BUTTON_LIST):
+        self.buttons = buttons
+
     def startup_pattern():
         '''Starting LED pattern'''
-        for i in range(3):
-            for led in LED_BOARD:
-                delay = 1 / (2 ** i)
-                led.on()
-                sleep(delay)
-                led.off()
-        for i in range(3):
-            LED_BOARD.on()
-            sleep(1)
-            LED_BOARD.off()
+        pass # TODO
 
     def on_button_pressed(button):
         '''When a button is pressed'''
@@ -74,12 +82,17 @@ class GameState(SessionState):
     
 
 class Session():
-    '''Class for game session'''
+    '''Class for session'''
 
-    def __init__(self):
-        self.buttons = BUTTON_MAP.copy()
-        self.session_buttons = []
-        self.session_state = SetupState()
+    def __init__(
+            self,
+            buttons: List[PlayerButton] = BUTTON_LIST,
+            accept_button: AcceptButton =  ACCEPT_BUTTON,
+            session_state: SessionState = SetupState(),
+        ):
+            self.buttons = buttons
+            self.accept_button = accept_button
+            self.session_state = session_state
 
     
     def start(self):
