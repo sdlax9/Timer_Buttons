@@ -1,4 +1,4 @@
-from buttons import PlayerButton, AcceptButton
+from buttons import PlayerButton, AcceptButton, PlayerButtonBoard
 from gpiozero import Device, LEDBoard
 from gpiozero.pins.mock import MockFactory
 
@@ -57,3 +57,5 @@ BUTTON_LIST = [
 ACCEPT_BUTTON = AcceptButton(
     button_pin=ACCEPT_BTN_PIN,
 )
+
+PLAYER_BUTTON_BOARD = PlayerButtonBoard(BUTTON_LIST)

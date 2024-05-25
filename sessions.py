@@ -2,8 +2,8 @@ from time import sleep
 
 from typing import List
 
-from config import BUTTON_LIST, ACCEPT_BUTTON
-from buttons import PlayerButton, AcceptButton
+from config import BUTTON_LIST, ACCEPT_BUTTON, PLAYER_BUTTON_BOARD
+from buttons import PlayerButton, AcceptButton, PlayerButtonBoard
 
 class SessionState():
     '''Base class for session state'''
@@ -41,16 +41,29 @@ class SetupState(SessionState):
     def __init__(self, buttons: List[PlayerButton] = BUTTON_LIST):
         self.buttons = buttons
 
-    def startup_pattern():
+    def startup_pattern(self):
         '''Starting LED pattern'''
         pass # TODO
 
-    def on_button_pressed(button):
-        '''When a button is pressed'''
+    def set_accept_button_press(self):
+        '''Set accept button press function'''
+        pass # TODO
+        # End session state
+        # Add active buttons to active_button_list
+        # Initialize GameState
+
+    def set_accept_button_hold(self):
+        '''Set accept button hold function'''
         pass # TODO
 
-    def on_button_hold(button):
-        '''When a button is held'''
+    def set_player_button_press(self):
+        '''Set player buttons press function'''
+        pass # TODO
+        # Toggle LED
+        # Toggle is_active
+
+    def set_player_button_hold(self):
+        '''Set player buttons hold function'''
         pass # TODO
 
     def start(self):
@@ -64,12 +77,20 @@ class GameState(SessionState):
         '''Starting LED pattern'''
         pass # TODO
 
-    def on_button_pressed(button):
-        '''When a button is pressed'''
+    def set_accept_button_press(self):
+        '''Set accept button press function'''
         pass # TODO
 
-    def on_button_hold(button):
-        '''When a button is held'''
+    def set_accept_button_hold(self):
+        '''Set accept button hold function'''
+        pass # TODO
+
+    def set_player_button_press(self):
+        '''Set player buttons press function'''
+        pass # TODO
+
+    def set_player_button_hold(self):
+        '''Set player buttons hold function'''
         pass # TODO
 
     def start(self):
