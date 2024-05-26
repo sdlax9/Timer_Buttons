@@ -2,7 +2,6 @@ from time import sleep
 from functools import wraps
 from typing import List
 
-from config import BUTTON_LIST
 from gpiozero import Button, LED
 
 
@@ -19,12 +18,24 @@ class PlayerButton(Button):
         self.total_time = 0
         self.running = False
         self.is_disabled = False
-        self.is_active = False
+        self.is_button_active = False
         self.is_player_turn = False
 
-    def toggle_disabled(self):
+    def disabled_toggle(self):
         '''Toggles disabled state'''
         self.is_disabled = not self.is_disabled
+
+    def active_button_toggle(self):
+        '''Toggles active state'''
+        self.is_button_active = not self.is_button_active
+
+    def player_turn_toggle(self):
+        '''Toggles player turn state'''
+        if not self.is_disabled:
+            self.is_player_turn = not self.is_player_turn
+            while self.is_player_turn:
+                sleep(1)
+                self.total_time += 1
 
     def led_on(self):
         '''Turns button LED on'''
@@ -48,14 +59,6 @@ class PlayerButton(Button):
                 sleep(delay)
                 self.led_off()
                 sleep(delay)
-    
-    def toggle_player_turn(self):
-        if not self.is_disabled:
-            self.is_player_turn = not self.is_player_turn
-            while self.is_player_turn:
-                sleep(1)
-                self.total_time += 1
-
 
 
 class AcceptButton(Button):
@@ -68,10 +71,10 @@ class AcceptButton(Button):
         )
 
 
-def PlayerButtonBoard():
+class PlayerButtonBoard():
     '''Class for group of PlayerButtons'''
 
-    def __init__(self, buttons: List[PlayerButton] = BUTTON_LIST):
+    def __init__(self, buttons: List[PlayerButton]):
         self.buttons=buttons
         
 

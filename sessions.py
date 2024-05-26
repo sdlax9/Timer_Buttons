@@ -11,24 +11,24 @@ class SessionState():
     def __init__(self, accept_button: AcceptButton = ACCEPT_BUTTON):
         self.accept_button = accept_button
 
+    def _accept_button_pressed(self):
+        '''Fuction when AcceptButton is pressed'''
+        pass
+
+    def _player_button_pressed(self):
+        '''Function when PlayerButton is pressed'''
+        pass
+
     def startup_pattern():
         '''LED pattern on startup'''
         pass
 
-    def set_accept_button_press(self):
+    def set_accept_button_pressed(self):
         '''Set accept button press function'''
         pass
 
-    def set_accept_button_hold(self):
-        '''Set accept button hold function'''
-        pass
-
-    def set_player_button_press(self):
+    def set_player_button_pressed(self):
         '''Set player buttons press function'''
-        pass
-
-    def set_player_button_hold(self):
-        '''Set player buttons hold function'''
         pass
 
     def start(self):
@@ -41,30 +41,26 @@ class SetupState(SessionState):
     def __init__(self, buttons: List[PlayerButton] = BUTTON_LIST):
         self.buttons = buttons
 
+    def _player_button_pressed(self, button: PlayerButton):
+        '''Function when PlayerButton is pressed'''
+        button.led_toggle()
+        button.toggle_active()
+
     def startup_pattern(self):
         '''Starting LED pattern'''
         pass # TODO
 
-    def set_accept_button_press(self):
+    def set_accept_button_pressed(self):
         '''Set accept button press function'''
         pass # TODO
         # End session state
         # Add active buttons to active_button_list
         # Initialize GameState
 
-    def set_accept_button_hold(self):
-        '''Set accept button hold function'''
-        pass # TODO
-
-    def set_player_button_press(self):
+    def set_player_button_pressed(self):
         '''Set player buttons press function'''
-        pass # TODO
-        # Toggle LED
-        # Toggle is_active
-
-    def set_player_button_hold(self):
-        '''Set player buttons hold function'''
-        pass # TODO
+        for button in self.buttons:
+            button.when_pressed = lambda: self.player_button_pressed(button)
 
     def start(self):
         '''Start session state'''
@@ -81,16 +77,8 @@ class GameState(SessionState):
         '''Set accept button press function'''
         pass # TODO
 
-    def set_accept_button_hold(self):
-        '''Set accept button hold function'''
-        pass # TODO
-
     def set_player_button_press(self):
         '''Set player buttons press function'''
-        pass # TODO
-
-    def set_player_button_hold(self):
-        '''Set player buttons hold function'''
         pass # TODO
 
     def start(self):
@@ -123,6 +111,6 @@ class Session():
 
         if isinstance(self.session_state, SetupState):
             for button in self.buttons.values():
-                button.when_held
+                pass # TODO
         else isinstance(self.session_state, GameState):
             pass # TODO

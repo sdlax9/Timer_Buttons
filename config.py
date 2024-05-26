@@ -58,4 +58,4 @@ ACCEPT_BUTTON = AcceptButton(
     button_pin=ACCEPT_BTN_PIN,
 )
 
-PLAYER_BUTTON_BOARD = PlayerButtonBoard(BUTTON_LIST)
+PLAYER_BUTTON_BOARD = PlayerButtonBoard(buttons=BUTTON_LIST)
