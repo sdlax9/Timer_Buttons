@@ -4,7 +4,6 @@ from typing import List
 
 from gpiozero import Button, LED
 
-
 class PlayerButton(Button):
     '''Class for player button and LED'''
 
@@ -70,7 +69,6 @@ class AcceptButton(Button):
             hold_time=5,
         )
 
-
 class PlayerButtonBoard():
     '''Class for group of PlayerButtons'''
 
@@ -78,7 +76,7 @@ class PlayerButtonBoard():
         self.buttons=buttons
         
 
-    def led_cycle(self, num: int = 1, delay: float = 0.5):
+    def led_cycle(self, num: int = 1, delay: float = 0.25):
         '''Cycles the LEDs on and off in order'''
         for _ in range(num):
             for button in self.buttons:
@@ -86,7 +84,7 @@ class PlayerButtonBoard():
                 sleep(delay)
                 button.led_off()
 
-    def led_flash(self, num: int = 1, delay: float = 0.5):
+    def led_flash(self, num: int = 1, delay: float = 0.25):
         '''Flashes the LEDS on and off'''
         for _ in range(num):
             for button in self.buttons:
@@ -94,4 +92,5 @@ class PlayerButtonBoard():
             sleep(delay)
             for button in self.buttons:
                 button.led_off()
+            sleep(delay)
     
