@@ -1,5 +1,3 @@
-from time import sleep
-
 from typing import List
 
 from config import BUTTON_LIST, ACCEPT_BUTTON, PLAYER_BUTTON_BOARD
