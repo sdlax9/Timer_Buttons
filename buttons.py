@@ -17,7 +17,7 @@ class PlayerButton(Button):
         self.total_time = 0
         self.running = False
         self.is_disabled = False
-        self.is_button_active = False
+        self.is_active_button = False
         self.is_player_turn = False
 
     def disabled_toggle(self):
@@ -26,7 +26,7 @@ class PlayerButton(Button):
 
     def active_button_toggle(self):
         '''Toggles active state'''
-        self.is_button_active = not self.is_button_active
+        self.is_active_button = not self.is_active_button
 
     def player_turn_toggle(self):
         '''Toggles player turn state'''
