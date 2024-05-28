@@ -145,6 +145,7 @@ class SetupState(SessionState):
         super().__init__()
         self.buttons = buttons
         self.button_board = button_board
+        self.is_active = True
         self.active_buttons = set()
 
     def _accept_button_pressed(self):
@@ -152,6 +153,7 @@ class SetupState(SessionState):
         inactive_buttons = list(set(self.buttons).difference(self.active_buttons))
         for button in inactive_buttons:
             button.active_button_toggle()
+            button.disabled_toggle()
         self.is_active = False
 
     def _player_button_pressed(self, button: PlayerButton):
@@ -178,7 +180,7 @@ class SetupState(SessionState):
         self.button_board.led_flash(3)
 
     def start(self):
-        '''Start session state'''
+        '''Runs session state pattern and sets button functions'''
         self._startup_pattern()
         self._set_player_button_pressed()
         self._set_accept_button_pressed()
@@ -196,21 +198,21 @@ class GameState(SessionState):
         self.button_board = button_board
 
 
-    def startup_pattern(self):
+    def _startup_pattern(self):
         '''Starting LED pattern'''
         self.button_board.led_flash(num=3)
 
-    def set_accept_button_press(self):
+    def _set_accept_button_press(self):
         '''Set accept button press function'''
         pass # TODO
 
-    def set_player_button_press(self):
+    def _set_player_button_press(self):
         '''Set player buttons press function'''
         pass # TODO
 
     def start(self):
-        '''Start session state'''
-        self.startup_pattern()
+        '''Runs session state pattern and sets button functions'''
+        self._startup_pattern()
 
 class PauseState():
     '''Pause session state'''
@@ -225,25 +227,21 @@ class PauseState():
         self.buttons = buttons
         self.button_board = button_board
  
-    def startup_pattern(self):
+    def _startup_pattern(self):
         '''Starting LED pattern'''
         self.button_board.led_flash(num=3)
 
-    def choice_mode+pattern(self):
-        '''Player selection choice mode pattern'''
-
-
-    def set_accept_button_press(self):
+    def _set_accept_button_press(self):
         '''Set accept button press function'''
         pass # TODO
 
-    def set_player_button_press(self):
+    def _set_player_button_press(self):
         '''Set player buttons press function'''
         pass # TODO
 
     def start(self):
-        '''Start session state'''
-        self.startup_pattern()
+        '''Runs session state pattern and sets button functions'''
+        self._startup_pattern()
 # --------------------
 # Session
 # --------------------
@@ -270,7 +268,7 @@ class Session():
         # Setup state
         self.session_state.start()
 
-        while self.session_state.active:
+        while self.session_state.is_active:
             pass
         
         active_buttons = list(self.session_state.active_buttons)
@@ -281,5 +279,10 @@ class Session():
         )
 
 
+    def reset(self):
+        '''Reset session'''
+        self.session_state = SetupState()
+        for button in self.buttons:
+            button.reset()
 
         

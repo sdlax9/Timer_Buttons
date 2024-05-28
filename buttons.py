@@ -26,7 +26,8 @@ class PlayerButton(Button):
 
     def active_button_toggle(self):
         '''Toggles active state'''
-        self.is_active_button = not self.is_active_button
+        if not self.is_disabled:
+            self.is_active_button = not self.is_active_button
 
     def player_turn_toggle(self):
         '''Toggles player turn state'''
@@ -48,7 +49,8 @@ class PlayerButton(Button):
 
     def led_toggle(self):
         '''Toggles button LED state'''
-        self.led.toggle()
+        if not self.is_disabled:
+            self.led.toggle()
 
     def led_flash(self, num: int, delay: float = 0.05):
         '''Flashes LED a number of times'''
@@ -58,6 +60,15 @@ class PlayerButton(Button):
                 sleep(delay)
                 self.led_off()
                 sleep(delay)
+
+    def reset(self):
+        '''Resets button'''
+        self.total_time = 0
+        self.running = False
+        self.is_disabled = False
+        self.is_active_button = False
+        self.is_player_turn = False
+        self.led_off()
 
     def when_held2(self, func):
         '''
