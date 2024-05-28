@@ -50,10 +50,10 @@ class PlayerButton(Button):
         '''Toggles button LED state'''
         self.led.toggle()
 
-    def led_flash(self, flashes: int, delay: float = 0.05):
+    def led_flash(self, num: int, delay: float = 0.05):
         '''Flashes LED a number of times'''
         if not self.is_disabled:
-            for i in range(flashes):
+            for i in range(num):
                 self.led_on()
                 sleep(delay)
                 self.led_off()
@@ -114,13 +114,19 @@ class PlayerButtonBoard():
         self.buttons = buttons
         
 
-    def led_cycle(self, num: int = 1, delay: float = 0.25):
+    def led_cycle(self, num: int = 1, delay: float = 0.25, reverse = False):
         '''Cycles the LEDs on and off in order'''
         for _ in range(num):
-            for button in self.buttons:
-                button.led_on()
-                sleep(delay)
-                button.led_off()
+            if not reverse:
+                for button in self.buttons:
+                    button.led_on()
+                    sleep(delay)
+                    button.led_off()
+            else:
+                for button in self.buttons[::-1]:
+                    button.led_on()
+                    sleep(delay)
+                    button.led_off()
 
     def led_flash(self, num: int = 1, delay: float = 0.25):
         '''Flashes the LEDS on and off'''
