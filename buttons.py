@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 from typing import List
 
 from gpiozero import Button, LED
@@ -19,6 +19,7 @@ class PlayerButton(Button):
         self.is_disabled = False
         self.is_active_button = False
         self.is_player_turn = False
+        self.turn_start_time = None
 
     def disabled_toggle(self):
         '''Toggles disabled state'''
@@ -32,10 +33,10 @@ class PlayerButton(Button):
     def player_turn_toggle(self):
         '''Toggles player turn state'''
         if not self.is_disabled:
-            self.is_player_turn = not self.is_player_turn
-            while self.is_player_turn:
-                sleep(1)
-                self.total_time += 1
+            if self.is_player_turn:
+                self._end_turn()
+            else:
+                self._start_turn()
 
     def led_on(self):
         '''Turns button LED on'''
@@ -60,6 +61,16 @@ class PlayerButton(Button):
                 sleep(delay)
                 self.led_off()
                 sleep(delay)
+
+    def start_turn(self):
+        '''Starts player timer'''
+        self.is_player_turn = True
+        self.turn_start_time = time()
+
+    def end_turn(self):
+        '''Ends player timer'''
+        self.is_player_turn = False
+        self.total_time += int(time() - self.turn_start_time)
 
     def reset(self):
         '''Resets button'''
