@@ -7,10 +7,10 @@ from config import BUTTON_LIST, ACCEPT_BUTTON, PLAYER_BUTTON_BOARD
 from buttons import PlayerButton, AcceptButton, PlayerButtonBoard
 
 # --------------------
-# Player Choice Modes
+# Turn order Modes
 # --------------------
 """
-Choice modes control how the active player will be selected during the game
+Select modes control how player turn order will be selected during the game
 
 - Resume:           continue with the current active player
 - Clockwise:        the next active player will be in clockwise order
@@ -20,10 +20,19 @@ Choice modes control how the active player will be selected during the game
 - Selected:         the player order is selected by the players
 """
 
-class SelectMode():
-    '''Base class for select mode'''
+class TOMode():
+    '''Base class for turn order mode'''
 
-    def __init__(self, accept_button: AcceptButton = ACCEPT_BUTTON):
+    def __init__(
+            self,
+            current_player: PlayerButton,
+            buttons: List[PlayerButton],
+            button_board: PlayerButtonBoard,
+            accept_button: AcceptButton = ACCEPT_BUTTON
+        ):
+        self.current_player = current_player
+        self.buttons = buttons
+        self.button_board = button_board
         self.accept_button = accept_button
         self.is_active = False
 
@@ -43,17 +52,58 @@ class SelectMode():
         '''Runs the mode pattern and sets button functions'''
         pass
 
-class ResumeMode():
+class ResumeMode(TOMode):
     '''Mode that continues with the current active player'''
 
-    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
-        super().__init__()
-        self.buttons = buttons
-        self.button_board = button_board
+    def __init__(
+            self,
+            current_player: PlayerButton,
+            buttons: List[PlayerButton],
+            button_board: PlayerButtonBoard
+        ):
+        super().__init__(
+            current_player=current_player,
+            buttons=buttons,
+            button_board=button_board
+        )
 
     def _player_button_pressed(self, button: PlayerButton):
-        '''Function when PlayerButton is pressed'''
-        pass # TODO
+        '''Function when PlayerButton is pressed. (Do nothing)'''
+        pass
+
+    def _mode_pattern(self):
+        '''LED pattern for mode. (Current player flashes)'''
+        while self.is_active and self.current_player is not None:
+            self.current_player.led_flash(delay=1)
+
+    def _set_player_button_pressed(self):
+        '''Set player buttons press function'''
+        for button in self.buttons:
+            button.when_pressed = self._player_button_pressed
+
+    def start(self):
+        '''Runs the mode pattern and sets button functions'''
+        self._set_player_button_pressed()
+        self._mode_pattern()
+
+class ClockwiseMode():
+    '''The next player turn will be in clockwise order'''
+
+    def __init__(
+            self,
+            current_player: PlayerButton,
+            buttons: List[PlayerButton],
+            button_board: PlayerButtonBoard
+        ):
+        super().__init__(
+            current_player=current_player,
+            buttons=buttons,
+            button_board=button_board
+        )
+
+    def _player_button_pressed(self):
+        '''Function when PlayerButton is pressed. (Set current player)'''
+        
 
     def _mode_pattern(self):
         '''LED pattern on startup'''
@@ -67,8 +117,8 @@ class ResumeMode():
         '''Runs the mode pattern and sets button functions'''
         pass # TODO
 
-class ClockwiseMode():
-    '''Clockwise select mode'''
+class CounterClockwiseMode():
+    '''The next player turn will be in counter clockwise order'''
 
     def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
         super().__init__()
@@ -91,7 +141,53 @@ class ClockwiseMode():
         '''Runs the mode pattern and sets button functions'''
         pass # TODO
 
+class RandomMode():
+    '''The next player turn will be randomly selected and continue in clockwise order'''
 
+    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
+        super().__init__()
+        self.buttons = buttons
+        self.button_board = button_board
+
+    def _player_button_pressed(self):
+        '''Function when PlayerButton is pressed'''
+        pass # TODO
+
+    def _mode_pattern(self):
+        '''LED pattern on startup'''
+        pass # TODO
+
+    def _set_player_button_pressed(self):
+        '''Set player buttons press function'''
+        pass # TODO
+
+    def start(self):
+        '''Runs the mode pattern and sets button functions'''
+        pass # TODO
+
+class SelectedMode():
+    '''Players select player order'''
+
+    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
+        super().__init__()
+        self.buttons = buttons
+        self.button_board = button_board
+
+    def _player_button_pressed(self):
+        '''Function when PlayerButton is pressed'''
+        pass # TODO
+
+    def _mode_pattern(self):
+        '''LED pattern on startup'''
+        pass # TODO
+
+    def _set_player_button_pressed(self):
+        '''Set player buttons press function'''
+        pass # TODO
+
+    def start(self):
+        '''Runs the mode pattern and sets button functions'''
+        pass # TODO
 # --------------------
 # Session States
 # --------------------
@@ -230,11 +326,13 @@ class PauseState():
         self,
         buttons: List[PlayerButton],
         button_board: PlayerButtonBoard,
+        current_player: PlayerButton,
         player_choice_mode: str = 'clockwise'
     ):
         super().__init__()
         self.buttons = buttons
         self.button_board = button_board
+        self.current_player = None
  
     def _startup_pattern(self):
         '''Starting LED pattern'''
@@ -283,7 +381,7 @@ class Session():
         active_buttons = list(self.session_state.active_buttons)
 
         # Init PauseState with active buttons
-        self.session_state = PauseState(
+        self.session_state = State(
             buttons = active_buttons,
             button_board = PlayerButtonBoard(active_buttons),
         )
