@@ -150,16 +150,25 @@ class SetupState(SessionState):
 
     def _accept_button_pressed(self):
         '''Function when AcceptButton is pressed'''
+        # Create inactive button list
         inactive_buttons = list(set(self.buttons).difference(self.active_buttons))
+
+        # Disable buttons for the rest of the session
         for button in inactive_buttons:
-            button.active_button_toggle()
             button.disabled_toggle()
+
+        # End setup session state
         self.is_active = False
 
     def _player_button_pressed(self, button: PlayerButton):
         '''Function when PlayerButton is pressed'''
+        # Toggle the LED
         button.led_toggle()
+
+        # Toggle button active status
         button.active_button_toggle()
+
+        # Add or remove button from active button list
         if button in self.active_buttons:
             self.active_buttons.remove(button)
         else:
@@ -273,7 +282,8 @@ class Session():
         
         active_buttons = list(self.session_state.active_buttons)
 
-        self.session_state = GameState(
+        # Init PauseState with active buttons
+        self.session_state = PauseState(
             buttons = active_buttons,
             button_board = PlayerButtonBoard(active_buttons),
         )
@@ -281,7 +291,10 @@ class Session():
 
     def reset(self):
         '''Reset session'''
+        # Reset session state to new SetupState instance
         self.session_state = SetupState()
+        
+        # Reset all buttons
         for button in self.buttons:
             button.reset()
 
