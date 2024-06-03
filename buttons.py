@@ -1,5 +1,6 @@
+from __future__ import annotations
 from time import sleep, time
-from typing import List
+from typing import List, Optional
 
 from gpiozero import Button, LED
 
@@ -19,7 +20,9 @@ class PlayerButton(Button):
         self.is_disabled = False
         self.is_active_button = False
         self.is_player_turn = False
+        self.next_player = None
         self.turn_start_time = None
+        self.next_player = Optional[PlayerButton]
 
     def disabled_toggle(self):
         '''Toggles disabled state'''
