@@ -1,6 +1,6 @@
 import random
 
-from typing import List
+from typing import List, Optional
 from enum import Enum
 
 from config import BUTTON_LIST, ACCEPT_BUTTON, PLAYER_BUTTON_BOARD
@@ -20,174 +20,181 @@ Select modes control how player turn order will be selected during the game
 - Selected:         the player order is selected by the players
 """
 
-class TOMode():
-    '''Base class for turn order mode'''
+# class TOMode():
+#     '''Base class for turn order mode'''
 
-    def __init__(
-            self,
-            current_player: PlayerButton,
-            buttons: List[PlayerButton],
-            button_board: PlayerButtonBoard,
-            accept_button: AcceptButton = ACCEPT_BUTTON
-        ):
-        self.current_player = current_player
-        self.buttons = buttons
-        self.button_board = button_board
-        self.accept_button = accept_button
-        self.is_active = False
+#     def __init__(
+#             self,
+#             buttons: List[PlayerButton],
+#             button_board: PlayerButtonBoard,
+#         ):
+#         self.buttons = buttons
+#         self.button_board = button_board
+#         self.is_active = False
+#         self.current_player = self._get_current_player()
 
-    def _player_button_pressed(self):
-        '''Function when PlayerButton is pressed'''
-        pass
+#     def _get_current_player(self):
+#         '''Get current player from button_board'''
+#         current_player = None
+#         for button in self.button_board:
+#             if button.is_player_turn:
+#                 current_player = button
+#         return current_player
 
-    def _mode_pattern():
-        '''LED pattern on startup'''
-        pass
+#     def _player_button_pressed(self):
+#         '''Function when PlayerButton is pressed'''
+#         pass
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        pass
+#     def _mode_pattern():
+#         '''LED pattern on startup'''
+#         pass
 
-    def start():
-        '''Runs the mode pattern and sets button functions'''
-        pass
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         pass
 
-class ResumeMode(TOMode):
-    '''Mode that continues with the current active player'''
+#     def start():
+#         '''Runs the mode pattern and sets button functions'''
+#         pass
 
-    def __init__(
-            self,
-            current_player: PlayerButton,
-            buttons: List[PlayerButton],
-            button_board: PlayerButtonBoard
-        ):
-        super().__init__(
-            current_player=current_player,
-            buttons=buttons,
-            button_board=button_board
-        )
+# class ResumeMode(TOMode):
+#     '''Mode that continues with the current active player'''
 
-    def _player_button_pressed(self, button: PlayerButton):
-        '''Function when PlayerButton is pressed. (Do nothing)'''
-        pass
+#     def __init__(
+#             self,
+#             buttons: List[PlayerButton],
+#             button_board: PlayerButtonBoard
+#         ):
+#         super().__init__(
+#             buttons=buttons,
+#             button_board=button_board
+#         )
 
-    def _mode_pattern(self):
-        '''LED pattern for mode. (Current player flashes)'''
-        while self.is_active and self.current_player is not None:
-            self.current_player.led_flash(delay=1)
+#     def _player_button_pressed(self, button: PlayerButton):
+#         '''Function when PlayerButton is pressed. (Do nothing)'''
+#         pass
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        for button in self.buttons:
-            button.when_pressed = self._player_button_pressed
+#     def _mode_pattern(self):
+#         '''LED pattern for mode. (Current player flashes)'''
+#         while self.is_active and self.current_player is not None:
+#             self.current_player.led_flash(delay=1)
 
-    def start(self):
-        '''Runs the mode pattern and sets button functions'''
-        self._set_player_button_pressed()
-        self._mode_pattern()
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         for button in self.buttons:
+#             button.when_pressed = self._player_button_pressed
 
-class ClockwiseMode():
-    '''The next player turn will be in clockwise order'''
+#     def start(self):
+#         '''Runs the mode pattern and sets button functions'''
+#         self._set_player_button_pressed()
+#         self._mode_pattern()
 
-    def __init__(
-            self,
-            current_player: PlayerButton,
-            buttons: List[PlayerButton],
-            button_board: PlayerButtonBoard
-        ):
-        super().__init__(
-            current_player=current_player,
-            buttons=buttons,
-            button_board=button_board
-        )
+# class ClockwiseMode():
+#     '''The next player turn will be in clockwise order'''
 
-    def _player_button_pressed(self):
-        '''Function when PlayerButton is pressed. (Set current player)'''
-        
+#     def __init__(
+#             self,
+#             current_player: PlayerButton,
+#             buttons: List[PlayerButton],
+#             button_board: PlayerButtonBoard
+#         ):
+#         super().__init__(
+#             current_player=current_player,
+#             buttons=buttons,
+#             button_board=button_board
+#         )
 
-    def _mode_pattern(self):
-        '''LED pattern on startup'''
-        pass # TODO
+#     def _player_button_pressed(self):
+#         '''Function when PlayerButton is pressed. (Set current player)'''
+#         pass # TODO
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        pass # TODO
+#     def _mode_pattern(self):
+#         '''LED pattern on startup'''
+#         pass # TODO
 
-    def start(self):
-        '''Runs the mode pattern and sets button functions'''
-        pass # TODO
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         pass # TODO
 
-class CounterClockwiseMode():
-    '''The next player turn will be in counter clockwise order'''
+#     def start(self):
+#         '''Runs the mode pattern and sets button functions'''
+#         pass # TODO
 
-    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
-        super().__init__()
-        self.buttons = buttons
-        self.button_board = button_board
+# class CounterClockwiseMode():
+#     '''The next player turn will be in counter clockwise order'''
 
-    def _player_button_pressed(self):
-        '''Function when PlayerButton is pressed'''
-        pass # TODO
+#     def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
+#         super().__init__()
+#         self.buttons = buttons
+#         self.button_board = button_board
 
-    def _mode_pattern(self):
-        '''LED pattern on startup'''
-        pass # TODO
+#     def _player_button_pressed(self):
+#         '''Function when PlayerButton is pressed'''
+#         pass # TODO
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        pass # TODO
+#     def _mode_pattern(self):
+#         '''LED pattern on startup'''
+#         pass # TODO
 
-    def start(self):
-        '''Runs the mode pattern and sets button functions'''
-        pass # TODO
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         pass # TODO
 
-class RandomMode():
-    '''The next player turn will be randomly selected and continue in clockwise order'''
+#     def start(self):
+#         '''Runs the mode pattern and sets button functions'''
+#         pass # TODO
 
-    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
-        super().__init__()
-        self.buttons = buttons
-        self.button_board = button_board
+# class RandomMode():
+#     '''The next player turn will be randomly selected and continue in clockwise order'''
 
-    def _player_button_pressed(self):
-        '''Function when PlayerButton is pressed'''
-        pass # TODO
+#     def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
+#         super().__init__(
+#             buttons=buttons,
+#             button_board=button_board,
+#         )
 
-    def _mode_pattern(self):
-        '''LED pattern on startup'''
-        pass # TODO
+#     def _player_button_pressed(self):
+#         '''Function when PlayerButton is pressed. (Do nothing)'''
+#         pass
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        pass # TODO
+#     def _mode_pattern(self):
+#         '''LED pattern on startup'''
+#         while self.is_active:
+#             random.choice(self.button_board).led_flash(delay=0.5)
 
-    def start(self):
-        '''Runs the mode pattern and sets button functions'''
-        pass # TODO
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         for button in self.buttons:
+#             button.when_pressed = self._player_button_pressed
 
-class SelectedMode():
-    '''Players select player order'''
+#     def start(self):
+#         '''Runs the mode pattern and sets button functions'''
+#         self._set_player_button_pressed()
+#         self._mode_pattern()
 
-    def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
-        super().__init__()
-        self.buttons = buttons
-        self.button_board = button_board
+# class SelectedMode():
+#     '''Players select player order'''
 
-    def _player_button_pressed(self):
-        '''Function when PlayerButton is pressed'''
-        pass # TODO
+#     def __init__(self, buttons: List[PlayerButton], button_board: PlayerButtonBoard):
+#         super().__init__()
+#         self.buttons = buttons
+#         self.button_board = button_board
 
-    def _mode_pattern(self):
-        '''LED pattern on startup'''
-        pass # TODO
+#     def _player_button_pressed(self):
+#         '''Function when PlayerButton is pressed'''
+#         pass # TODO
 
-    def _set_player_button_pressed(self):
-        '''Set player buttons press function'''
-        pass # TODO
+#     def _mode_pattern(self):
+#         '''LED pattern on startup'''
+#         pass # TODO
 
-    def start(self):
-        '''Runs the mode pattern and sets button functions'''
-        pass # TODO
+#     def _set_player_button_pressed(self):
+#         '''Set player buttons press function'''
+#         pass # TODO
+
+#     def start(self):
+#         '''Runs the mode pattern and sets button functions'''
+#         pass # TODO
 # --------------------
 # Session States
 # --------------------
@@ -327,28 +334,39 @@ class PauseState():
         buttons: List[PlayerButton],
         button_board: PlayerButtonBoard,
         current_player: PlayerButton,
-        player_choice_mode: str = 'clockwise'
     ):
         super().__init__()
         self.buttons = buttons
         self.button_board = button_board
-        self.current_player = None
- 
-    def _startup_pattern(self):
-        '''Starting LED pattern'''
-        self.button_board.led_flash(num=3)
+        self.is_active = True
+        self.current_player = current_player
 
-    def _set_accept_button_press(self):
-        '''Set accept button press function'''
-        pass # TODO
+    def _accept_button_pressed(self):
+        '''Function when AcceptButton is pressed'''
+        # Toggle current player turn
+        self.current_player.player_turn_toggle()
 
-    def _set_player_button_press(self):
+        # End setup session state
+        self.is_active = False
+
+    def _player_button_pressed(self, button: PlayerButton):
+        '''Function when PlayerButton is pressed. (Do nothing)'''
+        pass
+
+    def _mode_pattern(self):
+        '''LED pattern for mode. (Current player flashes)'''
+        while self.is_active and self.current_player is not None:
+            self.current_player.led_flash(delay=1)
+
+    def _set_player_button_pressed(self):
         '''Set player buttons press function'''
-        pass # TODO
+        for button in self.buttons:
+            button.when_pressed = self._player_button_pressed
 
     def start(self):
-        '''Runs session state pattern and sets button functions'''
-        self._startup_pattern()
+        '''Runs the mode pattern and sets button functions'''
+        self._set_player_button_pressed()
+        self._mode_pattern()
 # --------------------
 # Session
 # --------------------
@@ -381,7 +399,7 @@ class Session():
         active_buttons = list(self.session_state.active_buttons)
 
         # Init PauseState with active buttons
-        self.session_state = State(
+        self.session_state = PauseState(
             buttons = active_buttons,
             button_board = PlayerButtonBoard(active_buttons),
         )

@@ -20,9 +20,8 @@ class PlayerButton(Button):
         self.is_disabled = False
         self.is_active_button = False
         self.is_player_turn = False
-        self.next_player = None
         self.turn_start_time = None
-        self.next_player = Optional[PlayerButton]
+        self.next_player = None
 
     def disabled_toggle(self):
         '''Toggles disabled state'''
