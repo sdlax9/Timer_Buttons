@@ -483,6 +483,7 @@ class Session():
         current_player = self.session_state.current_player
 
         while True:
+            # Enter PauseState and wait for accept button press
             self.session_state = PauseState(
                 buttons=active_buttons,
                 button_board=button_board,
@@ -491,6 +492,7 @@ class Session():
 
             self.session_state.start()
 
+            # Enter GameState and wait for accept button press
             self.session_state = GameState(
                 buttons=active_buttons,
                 button_board=button_board,
