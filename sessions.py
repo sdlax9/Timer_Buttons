@@ -308,25 +308,43 @@ class GameState(SessionState):
         super().__init__()
         self.buttons = buttons
         self.button_board = button_board
+        self.current_player = self._get_current_player()
 
+    def _get_current_player(self):
+        '''Get current player from button_board'''
+        current_player = None
+        for button in self.button_board:
+            if button.is_player_turn:
+                current_player = button
+        return current_player
 
-    def _startup_pattern(self):
-        '''Starting LED pattern'''
-        self.button_board.led_flash(num=3)
+    def _accept_button_pressed(self):
+        '''Function when AcceptButton is pressed'''
+        self.current_player.player_turn_toggle()
+        self.is_active = False
 
-    def _set_accept_button_press(self):
-        '''Set accept button press function'''
-        pass # TODO
+    def _player_button_pressed(self, button: PlayerButton):
+        '''Function when PlayerButton is pressed. (Pass to next player)'''
+        if button == self.current_player:
+            self.current_player.player_turn_toggle()
+            self.current_player.next_player.player_turn_toggle()
+            self.current_player = self.current_player.next_player
 
-    def _set_player_button_press(self):
+    def _set_accept_button_pressed(self):
+        '''Set active button press function'''
+        self.active_button.when_pressed = self._active_button_pressed
+
+    def _set_player_button_pressed(self):
         '''Set player buttons press function'''
-        pass # TODO
+        for button in self.buttons:
+            button.when_pressed = self._player_button_pressed
 
     def start(self):
         '''Runs session state pattern and sets button functions'''
-        self._startup_pattern()
+        self._set_player_button_pressed()
+        self._set_accept_button_pressed()
 
-class PauseState():
+class PauseState(SessionState):
     '''Pause session state'''
 
     def __init__(
@@ -353,20 +371,71 @@ class PauseState():
         '''Function when PlayerButton is pressed. (Do nothing)'''
         pass
 
-    def _mode_pattern(self):
-        '''LED pattern for mode. (Current player flashes)'''
-        while self.is_active and self.current_player is not None:
-            self.current_player.led_flash(delay=1)
+    def _set_accept_button_pressed(self):
+        '''Set active button press function'''
+        self.active_button.when_pressed = self._active_button_pressed
 
     def _set_player_button_pressed(self):
         '''Set player buttons press function'''
         for button in self.buttons:
             button.when_pressed = self._player_button_pressed
 
+    def _startup_pattern(self):
+        '''LED pattern for mode. (Current player flashes)'''
+        while self.is_active and self.current_player is not None:
+            self.current_player.led_flash(delay=1)
+
     def start(self):
         '''Runs the mode pattern and sets button functions'''
         self._set_player_button_pressed()
-        self._mode_pattern()
+        self._set_accept_button_pressed()
+        self._startup_pattern()
+
+class RandomState(SessionState):
+    '''Pause session state'''
+
+    def __init__(
+        self,
+        buttons: List[PlayerButton],
+        button_board: PlayerButtonBoard,
+    ):
+        super().__init__()
+        self.buttons = buttons
+        self.button_board = button_board
+        self.is_active = True
+        self.current_player = None
+
+    def _accept_button_pressed(self):
+        '''Function when AcceptButton is pressed'''
+        # Randomly select current player
+        self.current_player = random.choice(self.button_board)
+
+        # End setup session state
+        self.is_active = False
+
+    def _player_button_pressed(self, button: PlayerButton):
+        '''Function when PlayerButton is pressed. (Do nothing)'''
+        pass
+
+    def _set_accept_button_pressed(self):
+        '''Set active button press function'''
+        self.active_button.when_pressed = self._active_button_pressed
+
+    def _set_player_button_pressed(self):
+        '''Set player buttons press function'''
+        for button in self.buttons:
+            button.when_pressed = self._player_button_pressed
+
+    def _startup_pattern(self):
+        '''LED pattern for session state (Random)'''
+        while self.is_active:
+            random.choice(self.button_board).led_flash(delay=0.5)
+
+    def start(self):
+        '''Runs the mode pattern and sets button functions'''
+        self._set_player_button_pressed()
+        self._set_accept_button_pressed()
+        self._startup_pattern()
 # --------------------
 # Session
 # --------------------
@@ -386,7 +455,6 @@ class Session():
             self.accept_button = accept_button
             self.session_state = session_state
 
-    
     def start(self):
         '''Initialize session'''
 
@@ -397,12 +465,40 @@ class Session():
             pass
         
         active_buttons = list(self.session_state.active_buttons)
+        for i, button in enumerate(active_buttons[:-1]):
+            button.next_player = active_buttons[i+1]
+        active_buttons[-1].next_player = active_buttons[0]
+
+        button_board = PlayerButtonBoard(active_buttons)
 
         # Init PauseState with active buttons
-        self.session_state = PauseState(
-            buttons = active_buttons,
-            button_board = PlayerButtonBoard(active_buttons),
+        self.session_state = RandomState(
+            buttons=active_buttons,
+            button_board=button_board,
         )
+
+        # Start RandomState
+        self.session_state.start()
+
+        current_player = self.session_state.current_player
+
+        while True:
+            self.session_state = PauseState(
+                buttons=active_buttons,
+                button_board=button_board,
+                current_player=current_player,
+            )
+
+            self.session_state.start()
+
+            self.session_state = GameState(
+                buttons=active_buttons,
+                button_board=button_board,
+            )
+
+            while self.session_state.is_active:
+                pass
+
 
 
     def reset(self):
